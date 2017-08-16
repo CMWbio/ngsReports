@@ -3,13 +3,23 @@
 \docType{methods}
 \name{FastqcFile}
 \alias{FastqcFile}
-\title{Create a New FastqcFile Object}
+\alias{FastqcFile,character-method}
+\alias{FastqcFile}
+\title{Create a new FastqcFile Object}
 \usage{
 FastqcFile(x)
+
+\S4method{FastqcFile}{character}(x)
 }
 \arguments{
 \item{x}{Character vector (1) specifying a valid path to a file/directory as output by FastQC}
 }
+\value{
+An object of class FastqcFile
+}
 \description{
-Create a FastqcFile object
+Create a new FastqcFile Object
+}
+\details{
+Create a new FastqcFile Object from an external file
 }

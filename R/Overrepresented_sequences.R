@@ -19,15 +19,17 @@
 #'
 #' @export
 #' @rdname Overrepresented_sequences
+#' @aliases Overrepresented_sequences
 setMethod("Overrepresented_sequences", "FastqcData",
           function(object){
             df <- dplyr::mutate(object@Overrepresented_sequences,
-                                Filename = fileNames(object))
+                                Filename = fileName(object))
             dplyr::select(df, Filename, dplyr::everything())
           })
 
 #' @export
 #' @rdname Overrepresented_sequences
+#' @aliases Overrepresented_sequences
 setMethod("Overrepresented_sequences", "FastqcDataList",
           function(object){
             df <- lapply(object@.Data, Overrepresented_sequences)
@@ -36,6 +38,7 @@ setMethod("Overrepresented_sequences", "FastqcDataList",
 
 #' @export
 #' @rdname Overrepresented_sequences
+#' @aliases Overrepresented_sequences
 setMethod("Overrepresented_sequences", "FastqcFile",
           function(object){
             object <- getFastqcData(object)
@@ -44,6 +47,7 @@ setMethod("Overrepresented_sequences", "FastqcFile",
 
 #' @export
 #' @rdname Overrepresented_sequences
+#' @aliases Overrepresented_sequences
 setMethod("Overrepresented_sequences", "FastqcFileList",
           function(object){
             object <- getFastqcData(object)
@@ -52,6 +56,7 @@ setMethod("Overrepresented_sequences", "FastqcFileList",
 
 #' @export
 #' @rdname Overrepresented_sequences
+#' @aliases Overrepresented_sequences
 setMethod("Overrepresented_sequences", "character",
           function(object){
             object <- getFastqcData(object)

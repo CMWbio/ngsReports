@@ -7,7 +7,7 @@
 plotOverrepresentedHeatmapPlotly(x, subset, pwfCols, nSeq = 5, type = ".+",
   method = "Individual", low = rgb(0.2, 0, 0.2), high = rgb(1, 0, 0),
   naCol = "grey80", pattern = "(.+)\\\\.(fastq|fq).*",
-  clusterNames = FALSE, usePlotly = FALSE, trimNames = TRUE,
+  clusterNames = FALSE, usePlotly = FALSE, trimNames = FALSE,
   dendrogram = FALSE)
 }
 \arguments{
@@ -16,6 +16,9 @@ plotOverrepresentedHeatmapPlotly(x, subset, pwfCols, nSeq = 5, type = ".+",
 
 \item{subset}{\code{logical}. Return the values for a subset of files.
 May be useful to only return totals from R1 files, or any other subset}
+
+\item{pwfCols}{Object of class \code{PwfCols} to give colours for pass, warning, and fail
+values in plot}
 
 \item{nSeq}{\code{numeric}.
 The number of Sequences to show.
@@ -34,20 +37,19 @@ or whether the top nKmers are selected from each individual file.}
 \item{naCol}{colour used for missing values}
 
 \item{pattern}{\code{character}.
-Contains a regular expression which will be captured from fileNames.
+Contains a regular expression which will be captured from fileName.
 The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz}
+
+\item{clusterNames}{\code{logical} Cluster heatmap, or not.}
 
 \item{usePlotly}{\code{logical} Default \code{FALSE} will render using ggplot.
 If \code{TRUE} plot will be rendered with plotly}
 
-\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileNames}
+\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileName}
 
 \item{dendrogram}{\code{logical} redundant if \code{clusterNames} is \code{FALSE}
 if both \code{clusterNames} and \code{dendrogram} are specified as \code{TRUE} then the dendrogram
 will be displayed.}
-
-\item{pwfcols}{Object of class \code{\link{PwfCols}} to give colours for pass, warning, and fail
-values in plot}
 }
 \description{
 Plot Overrepresented Sequences across an entire library

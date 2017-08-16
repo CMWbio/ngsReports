@@ -17,14 +17,16 @@
 #'
 #' @export
 #' @rdname Total_Deduplicated_Percentage
+#' @aliases Total_Deduplicated_Percentage
 setMethod("Total_Deduplicated_Percentage", "FastqcData",
           function(object){
-            dplyr::data_frame(Filename = fileNames(object),
+            dplyr::data_frame(Filename = fileName(object),
                               Total = object@Total_Deduplicated_Percentage)
           })
 
 #' @export
 #' @rdname Total_Deduplicated_Percentage
+#' @aliases Total_Deduplicated_Percentage
 setMethod("Total_Deduplicated_Percentage", "FastqcDataList",
           function(object){
             df <- lapply(object@.Data, Total_Deduplicated_Percentage)
@@ -33,6 +35,7 @@ setMethod("Total_Deduplicated_Percentage", "FastqcDataList",
 
 #' @export
 #' @rdname Total_Deduplicated_Percentage
+#' @aliases Total_Deduplicated_Percentage
 setMethod("Total_Deduplicated_Percentage", "FastqcFile",
           function(object){
             object <- getFastqcData(object)
@@ -41,6 +44,7 @@ setMethod("Total_Deduplicated_Percentage", "FastqcFile",
 
 #' @export
 #' @rdname Total_Deduplicated_Percentage
+#' @aliases Total_Deduplicated_Percentage
 setMethod("Total_Deduplicated_Percentage", "FastqcFileList",
           function(object){
             object <- getFastqcData(object)
@@ -49,6 +53,7 @@ setMethod("Total_Deduplicated_Percentage", "FastqcFileList",
 
 #' @export
 #' @rdname Total_Deduplicated_Percentage
+#' @aliases Total_Deduplicated_Percentage
 setMethod("Total_Deduplicated_Percentage", "character",
           function(object){
             object <- getFastqcData(object)

@@ -15,8 +15,11 @@ plotNContentPlotly(x, subset, pwfCols, pattern = "(.+)\\\\.(fastq|fq).*",
 \item{subset}{\code{logical}. Return the values for a subset of files.
 May be useful to only return totals from R1 files, or any other subset}
 
+\item{pwfCols}{Object of class \code{\link{PwfCols}} to give colours for pass, warning, and fail
+values in plot}
+
 \item{pattern}{\code{character}.
-Contains a regular expression which will be captured from fileNames.
+Contains a regular expression which will be captured from fileName.
 The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz}
 
 \item{clusterNames}{\code{logical} default \code{FALSE}. If set to \code{TRUE},
@@ -30,9 +33,6 @@ will be displayed.}
 
 \item{usePlotly}{\code{logical} Default \code{FALSE} will render using ggplot.
 If \code{TRUE} plot will be rendered with plotly}
-
-\item{pwfcols}{Object of class \code{\link{PwfCols}} to give colours for pass, warning, and fail
-values in plot}
 }
 \value{
 A ggplot2 or plotly object

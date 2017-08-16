@@ -48,7 +48,7 @@ fastqcShiny <- function(fastqcInput, subsetAll = ""){
     fdl <- fastqcInput
   }
 
-  fdl <- fdl[grepl(subsetAll, fileNames(fdl))]
+  fdl <- fdl[grepl(subsetAll, fileName(fdl))]
 
   ui <- shinyUI(
     fluidPage(
@@ -181,7 +181,7 @@ fastqcShiny <- function(fastqcInput, subsetAll = ""){
     output$GCspecies <- renderUI({
       if(input$GCtheory){
         selectInput("GCspecies", "Select species for Theoretical GC",
-                    choices = genomes(gcTheoretical),
+                    choices = genomes(gcTheoretical)$Name,
                     selected = "Hsapiens")
       }
     })

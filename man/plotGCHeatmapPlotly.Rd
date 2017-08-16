@@ -6,8 +6,8 @@
 \usage{
 plotGCHeatmapPlotly(x, subset, counts = FALSE,
   pattern = "(.+)\\\\.(fastq|fq).*", clusterNames = FALSE, pwfCols,
-  GCtheory = FALSE, species = "Hsapiens", trimNames = TRUE,
-  usePlotly = FALSE, dendrogram = FALSE)
+  GCtheory = FALSE, GCtheoryType = "Genome", species = "Hsapiens",
+  trimNames = TRUE, usePlotly = FALSE, dendrogram = FALSE)
 }
 \arguments{
 \item{x}{Can be a \code{FastqcFile}, \code{FastqcFileList}, \code{FastqcData},
@@ -19,7 +19,7 @@ May be useful to only return totals from R1 files, or any other subset}
 \item{counts}{\code{logical}. Display counts of GC content rather than frequency}
 
 \item{pattern}{\code{character}.
-Contains a regular expression which will be captured from fileNames.
+Contains a regular expression which will be captured from fileName.
 The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz}
 
 \item{clusterNames}{\code{logical} default \code{FALSE}. If set to \code{TRUE},
@@ -28,8 +28,11 @@ fastqc data will be clustered using heirachial clustering}
 \item{pwfCols}{Object of class \code{\link{PwfCols}} to give colours for pass, warning, and fail
 values in plot}
 
-\item{GCtheory}{\code{logical} default is \code{FALSE} to give the absolute value, set to \code{TRUE} to normalize
+\item{GCtheory}{\code{logical} default is \code{FALSE} to give the true GC content%, set to \code{TRUE} to normalize
 values of GC_Content by the theoretical values using \code{\link{gcTheoretical}}. \code{species} must be specified.}
+
+\item{GCtheoryType}{\code{"character"} Select type of data to normalize GC content% agianst accepts either "Genome" or
+"Transcriptome" Default is "Genome"}
 
 \item{species}{\code{character} if \code{gcTheory} is \code{TRUE} its must be accompanied by a species
 Currently supports Genome only (transcriptome to come). Species currently supported: A. lyrata, A. mellifera, A. thaliana,
@@ -38,7 +41,7 @@ M. furo, M. mulatta, M. musculus, O. sativa, P. troglodytes, R. norvegicus, S. c
 T. guttata, V. vinifera. Use \code{ngsReports::genomes(ngsReports::gcTheoretical)} to display the corresponding names for
 each species.}
 
-\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileNames}
+\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileName}
 
 \item{usePlotly}{\code{logical} Default \code{FALSE} will render using ggplot.
 If \code{TRUE} plot will be rendered with plotly}

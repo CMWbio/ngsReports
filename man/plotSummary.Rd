@@ -16,14 +16,17 @@ May be useful to only return totals from R1 files, or any other subset}
 
 \item{pwfCols}{Object of class \code{\link{PwfCols}} containing the colours for PASS/WARN/FAIL}
 
-\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileNames}
+\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileName}
 
 \item{pattern}{\code{character}.
-Contains a regular expression which will be captured from fileNames.
+Contains a regular expression which will be captured from fileName.
 The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz}
+
+\item{usePlotly}{\code{logical}. Generate an interactive plot using plotly}
 }
 \value{
-A standard ggplot2 object
+A ggplot2 object (\code{usePlotly = FALSE})
+or an interactive plotly object (\code{usePlotly = TRUE})
 }
 \description{
 Extract the PASS/WARN/FAIL summaries and plot them

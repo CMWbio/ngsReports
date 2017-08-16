@@ -5,7 +5,7 @@
 \title{Draw a barplot of read totals}
 \usage{
 plotReadTotals(x, subset, millions, trimNames = TRUE,
-  pattern = "(.+)\\\\.(fastq|fq).*")
+  pattern = "(.+)\\\\.(fastq|fq).*", usePlotly = FALSE)
 }
 \arguments{
 \item{x}{Can be a \code{FastqcFile}, \code{FastqcFileList}, \code{FastqcData},
@@ -17,11 +17,14 @@ May be useful to only return totals from R1 files, or any other subset}
 \item{millions}{\code{logical}. Use Millions of reads as the scale for the y-axis.
 Unless specified, will be set as TRUE automatically if the highest total is > 2e06.}
 
-\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileNames}
+\item{trimNames}{\code{logical}. Capture the text specified in \code{pattern} from fileName}
 
 \item{pattern}{\code{character}.
-Contains a regular expression which will be captured from fileNames.
+Contains a regular expression which will be captured from fileName.
 The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz}
+
+\item{usePlotly}{\code{logical} Default \code{FALSE} will render using ggplot.
+If \code{TRUE} plot will be rendered with plotly}
 }
 \value{
 Returns a ggplot object.
@@ -50,7 +53,7 @@ plotReadTotals(fdl)
 
 # Change the scale so it is not in millions
 # Also subset the reads to just the R1 files
-r1 <- grepl("R1", fileNames(fdl))
+r1 <- grepl("R1", fileName(fdl))
 plotReadTotals(fdl, subset = r1, millions = FALSE)
 
 }

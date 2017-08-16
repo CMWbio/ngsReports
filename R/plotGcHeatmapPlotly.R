@@ -12,21 +12,23 @@
 #' May be useful to only return totals from R1 files, or any other subset
 #' @param counts \code{logical}. Display counts of GC content rather than frequency
 #' @param pattern \code{character}.
-#' Contains a regular expression which will be captured from fileNames.
+#' Contains a regular expression which will be captured from fileName.
 #' The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz
 #' @param clusterNames \code{logical} default \code{FALSE}. If set to \code{TRUE},
 #' fastqc data will be clustered using heirachial clustering
 #' @param pwfCols Object of class \code{\link{PwfCols}} to give colours for pass, warning, and fail
 #' values in plot
-#' @param GCtheory \code{logical} default is \code{FALSE} to give the absolute value, set to \code{TRUE} to normalize
+#' @param GCtheory \code{logical} default is \code{FALSE} to give the true GC content%, set to \code{TRUE} to normalize
 #' values of GC_Content by the theoretical values using \code{\link{gcTheoretical}}. \code{species} must be specified.
+#' @param GCtheoryType \code{"character"} Select type of data to normalize GC content% agianst accepts either "Genome" or
+#' "Transcriptome" Default is "Genome"
 #' @param species \code{character} if \code{gcTheory} is \code{TRUE} its must be accompanied by a species
 #' Currently supports Genome only (transcriptome to come). Species currently supported: A. lyrata, A. mellifera, A. thaliana,
 #' B. taurus, C. elegans, C. familiaris, D. melanogaster, D. rerio, E. coli, G. aculeatus, G. gallus, H. sapiens, M. fascicularis,
 #' M. furo, M. mulatta, M. musculus, O. sativa, P. troglodytes, R. norvegicus, S. cerevisiae, S scrofa, T. gondii,
 #' T. guttata, V. vinifera. Use \code{ngsReports::genomes(ngsReports::gcTheoretical)} to display the corresponding names for
 #' each species.
-#' @param trimNames \code{logical}. Capture the text specified in \code{pattern} from fileNames
+#' @param trimNames \code{logical}. Capture the text specified in \code{pattern} from fileName
 #' @param dendrogram \code{logical} redundant if \code{clusterNames} and \code{usePlotly} are \code{FALSE}.
 #' if both \code{clusterNames} and \code{dendrogram} are specified as \code{TRUE} then the dendrogram
 #' will be displayed.
@@ -66,14 +68,22 @@
 #' @export plotGCHeatmapPlotly
 plotGCHeatmapPlotly <- function(x, subset, counts = FALSE, pattern = "(.+)\\.(fastq|fq).*",
                                 clusterNames = FALSE, pwfCols,
-                                GCtheory = FALSE, species = "Hsapiens",
-                                trimNames = TRUE, usePlotly = FALSE, dendrogram = FALSE){
+                                GCtheory = FALSE, GCtheoryType = "Genome", species = "Hsapiens",
+                                trimNames = TRUE, usePlotly = FALSE,
+                                dendrogram = FALSE){
   stopifnot(grepl("(Fastqc|character)", class(x)))
 
-  if(GCtheory){
+  if(GCtheory & GCtheoryType == "Genome"){
     spp <- ngsReports::genomes(ngsReports::gcTheoretical)
-    if(!species %in% spp){
-      stop(cat("Currently only supports the species", spp, sep = ", "))
+    if(!species %in% spp$Name){
+      stop(cat("Currently only supports genomes for", spp$Name, sep = ", "))
+    }
+  }
+
+  if(GCtheory & GCtheoryType == "Transcriptome"){
+    spp <- ngsReports::transcriptomes(ngsReports::gcTheoretical)
+    if(!species %in% spp$Name){
+      stop(cat("Currently only supports transcriptomes for", spp$Name, sep = ", "))
     }
   }
 
@@ -106,26 +116,16 @@ plotGCHeatmapPlotly <- function(x, subset, counts = FALSE, pattern = "(.+)\\.(fa
       dplyr::ungroup() %>%
       dplyr::select(Filename, GC_Content, Value = Freq)
 
-    # Add the observed mean at each value:
-    mn <- dplyr::group_by(df, GC_Content) %>%
-      dplyr::summarise(Value = mean(Value)) %>%
-      dplyr::mutate(Value = Value / sum(Value), # Normalise to 1 for a distribution
-                    Filename = "Observed Mean")
+    if(GCtheory){
+      df <- df %>% split(.["Filename"]) %>% lapply(function(x){
+        gcTheoryDF <- ngsReports::getGC(ngsReports::gcTheoretical, name = species, type = GCtheoryType)
+        x <- dplyr::mutate(x, Value = abs(Value - unlist(gcTheoryDF[species])))
+      }) %>% dplyr::bind_rows(.)
+    }
   }else{
     df <- dplyr::select(df, Filename, GC_Content, Value = Count)
-    mn <- dplyr::group_by(df, GC_Content) %>%
-      dplyr::summarise(Value = mean(Value)) %>%
-      dplyr::mutate(Filename = "Observed Mean")
   }
 
-  df <- dplyr::bind_rows(df, mn)
-
-  if(GCtheory){
-    df <- df %>% split(.["Filename"]) %>% lapply(function(x){
-      gcTheoryDF <- ngsReports::getGC(ngsReports::gcTheoretical, species = species, type = "Genome")
-      x <- dplyr::mutate(x, Value =  Value - (gcTheoryDF$Genome/sum(gcTheoryDF$Genome)))
-    }) %>% dplyr::bind_rows()
-  }
   if(clusterNames){
     df <- reshape2::dcast(df, Filename ~ GC_Content)
     xx <- dplyr::select(df, -Filename)
@@ -158,7 +158,6 @@ plotGCHeatmapPlotly <- function(x, subset, counts = FALSE, pattern = "(.+)\\.(fa
     GCheatmap <- GCheatmap + theme(axis.text.y = element_blank(),
                                  axis.ticks.y = element_blank())
 
-    om_col <- data.frame(Status = NA, Category = NA, Filename = "Observed Mean")
 
     t <- getSummary(x) %>% dplyr::filter(Category == "Per sequence GC content")
     t <- dplyr::mutate(t, FilenameFull = Filename,

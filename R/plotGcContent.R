@@ -13,10 +13,12 @@
 #' May be useful to only return totals from R1 files, or any other subset
 #' @param counts \code{logical}. Plot the counts from each file if \code{counts = TRUE}.
 #' If \code{counts = FALSE} the frequencies will be plotted
-#' @param trimNames \code{logical}. Capture the text specified in \code{pattern} from fileNames
+#' @param trimNames \code{logical}. Capture the text specified in \code{pattern} from fileName
 #' @param pattern \code{character}.
-#' Contains a regular expression which will be captured from fileNames.
+#' Contains a regular expression which will be captured from fileName.
 #' The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz
+#' @param usePlotly \code{logical} Default \code{FALSE} will render using ggplot.
+#' If \code{TRUE} plot will be rendered with plotly
 #'
 #' @return A ggplot2 object
 #'
@@ -35,21 +37,23 @@
 #' plotGcContent(fdl)
 #'
 #' # Plot the R1 files using counts
-#' r1 <- grepl("R1", fileNames(fdl))
+#' r1 <- grepl("R1", fileName(fdl))
 #' plotGcContent(fdl, subset = r1 , counts = TRUE)
 #'
 #'
-#' 
+#'
 #' @importFrom dplyr group_by
 #' @importFrom dplyr mutate
 #' @importFrom dplyr ungroup
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
+#' @importFrom plotly ggplotly
 #'
 #' @export
 plotGcContent <- function(x, subset, counts = FALSE,
-                          trimNames = TRUE, pattern = "(.+)\\.(fastq|fq).*"){
+                          trimNames = TRUE, pattern = "(.+)\\.(fastq|fq).*",
+                          usePlotly = FALSE){
 
   stopifnot(grepl("(Fastqc|character)", class(x)))
 
@@ -116,7 +120,12 @@ plotGcContent <- function(x, subset, counts = FALSE,
     ylab(ylab) +
     theme_bw()
 
+  if(usePlotly){
+    gcPlot <- ggplotly(gcPlot)
+  }
+
   # Draw the plot
   gcPlot
+
 
 }

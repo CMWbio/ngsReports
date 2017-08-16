@@ -12,10 +12,13 @@
 #' May be useful to only return totals from R1 files, or any other subset
 #' @param millions \code{logical}. Use Millions of reads as the scale for the y-axis.
 #' Unless specified, will be set as TRUE automatically if the highest total is > 2e06.
-#' @param trimNames \code{logical}. Capture the text specified in \code{pattern} from fileNames
+#' @param trimNames \code{logical}. Capture the text specified in \code{pattern} from fileName
 #' @param pattern \code{character}.
-#' Contains a regular expression which will be captured from fileNames.
+#' Contains a regular expression which will be captured from fileName.
 #' The default will capture all text preceding .fastq/fastq.gz/fq/fq.gz
+#' @param usePlotly \code{logical} Default \code{FALSE} will render using ggplot.
+#' If \code{TRUE} plot will be rendered with plotly
+#'
 #'
 #' @examples
 #'
@@ -33,7 +36,7 @@
 #'
 #' # Change the scale so it is not in millions
 #' # Also subset the reads to just the R1 files
-#' r1 <- grepl("R1", fileNames(fdl))
+#' r1 <- grepl("R1", fileName(fdl))
 #' plotReadTotals(fdl, subset = r1, millions = FALSE)
 #'
 #' @return Returns a ggplot object.
@@ -46,10 +49,12 @@
 #' @importFrom ggplot2 theme_bw
 #' @importFrom ggplot2 theme
 #' @importFrom ggplot2 element_text
+#' @importFrom plotly ggplotly
 #'
 #' @export
 plotReadTotals <- function(x, subset, millions,
-                           trimNames = TRUE, pattern = "(.+)\\.(fastq|fq).*"){
+                           trimNames = TRUE, pattern = "(.+)\\.(fastq|fq).*",
+                           usePlotly = FALSE){
 
   stopifnot(grepl("(Fastqc|character)", class(x)))
 
@@ -84,6 +89,9 @@ plotReadTotals <- function(x, subset, millions,
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 
+  if(usePlotly){
+    rtPlot <- ggplotly(rtPlot)
+  }
   # Draw the plot
   rtPlot
 
